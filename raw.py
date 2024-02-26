@@ -9,6 +9,7 @@ from mne.channels import make_standard_montage
 from mne.datasets import eegbci
 from mne.decoding import CSP
 from mne.io import concatenate_raws, read_raw_edf
+from sklearn.decomposition import PCA
 
 print(__doc__)
 
@@ -19,9 +20,7 @@ print(__doc__)
 # cue onset.
 tmin, tmax = -1.0, 4.0
 event_id = dict(hands=2, feet=3)
-print("\n\n\n")
-print(event_id)
-print("\n\n\n")
+
 subject = 1
 runs = [6, 10, 14]  # motor imagery: hands vs feet
 
@@ -31,14 +30,15 @@ eegbci.standardize(raw)  # set channel names
 montage = make_standard_montage("standard_1005")
 raw.set_montage(montage)
 
-print("Raw-type:")
-print(type(raw))
+
 # Apply band-pass filter
 raw.filter(7.0, 30.0, fir_design="firwin", skip_by_annotation="edge")
 
 events, _ = events_from_annotations(raw, event_id=dict(T1=2, T2=3))
 
+
 picks = pick_types(raw.info, meg=False, eeg=True, stim=False, eog=False, exclude="bads")
+
 
 # Read epochs (train will be done only between 1 and 2s)
 # Testing will be done with a running classifier
@@ -58,6 +58,11 @@ labels = epochs.events[:, -1] - 2
 scores = []
 epochs_data = epochs.get_data()
 epochs_data_train = epochs_train.get_data()
+print("\n\n")
+print(raw.get_data().shape)
+print("\n\n")
+print(epochs_data.shape)
+print("\n\n")
 cv = ShuffleSplit(10, test_size=0.2, random_state=42)
 cv_split = cv.split(epochs_data_train)
 
@@ -78,8 +83,15 @@ print(
 
 print(labels)
 # plot CSP patterns estimated on full data for visualization
-csp.fit_transform(epochs_data, labels)
+features_transform = csp.fit_transform(epochs_data, labels)
+lda_transform = lda.fit_transform(features_transform, labels)
 
+pca = PCA(n_components=2)
+pca_transform = pca.fit_transform(features_transform)
+plt.scatter(pca_transform[:,0], pca_transform[:, 1], c = labels, cmap = 'rainbow_r')
+plt.show()
+plt.scatter(lda_transform, [0]*len(lda_transform), c = labels, cmap='rainbow_r')
+plt.show()
 csp.plot_patterns(epochs.info, ch_type="eeg", units="Patterns (AU)", size=1.5)
 print("\n\n\n")
 print(type(raw))
