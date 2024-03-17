@@ -112,7 +112,7 @@ plt.show()
 
 
  
-pca = PCA(n_components=2)   #plotting pca
+pca = PCA(n_components=2)   #plotting pca for 2d visualization
 pca_transform = pca.fit_transform(features_transform)
 plt.scatter(pca_transform[:,0], pca_transform[:, 1], c = y_train, cmap = 'rainbow_r')
 plt.show()
