@@ -75,12 +75,18 @@ features = np.concatenate([features_hand, features_feet])   #concatenating eeg d
 
 y_train = np.concatenate([np.zeros(features_hand.shape[0]), np.ones(features_feet.shape[0])])   #creating a target object (0 rrepresenting the first movement and 1 representing the second movement)
 
-csp = mne.decoding.CSP(n_components = 4, reg = None, log = True, norm_trace = False)   #creating a csp object with no. of features = 4 (can be changed)
+csp = mne.decoding.CSP(n_components = 21, reg = None, log = True, norm_trace = False)   #creating a csp object with no. of features = 4 (can be changed)
 features_transform = csp.fit_transform(features, y_train)           #applying CSP to the features
 
 
 lda = LinearDiscriminantAnalysis()    #creating LDA classifier (we can specify the dimension, but if only two movements are classified, it is going to be automatically 1 dimension)
-lda.fit_transform = lda.fit(features_transform, y_train)  #applying LDA classifier to the data transformed by CSP (u can also just do fit but with fit_transform we can also generate plots)
+lda_transform = lda.fit_transform(features_transform, y_train)  #applying LDA classifier to the data transformed by CSP (u can also just do fit but with fit_transform we can also generate plots)
+
+
+#print(lda_transform.shape, y_train.shape)
+LR = LogisticRegression(multi_class = "multinomial")
+LR.fit(lda_transform, y_train)
+
 time = perf_counter() - start
 
 print(f"The time required was {time}")
@@ -89,12 +95,18 @@ test_data_hand = ld.loadData()   #loading test data for the first movement
 features_test_hand = bandPassFilterReshape(test_data_hand, info)  #applying bandpass filter and changing it into epochs
 test_data_feet = ld.loadData()
 features_test_feet = bandPassFilterReshape(test_data_feet, info)
+
+
 features_test_hand = csp.transform(features_test_hand)      #transforming the data using CSP
 features_test_feet = csp.transform(features_test_feet)
+features_test_handd = lda.transform(features_test_hand)
+features_test_feett = lda.transform(features_test_feet)
+print(features_test_handd.shape)
 
 
-test_predict_handd = lda.predict(features_test_hand)   #predicting hand movement in this case (but any other movements can be used instead)
-test_predict_feett = lda.predict(features_test_feet)   #predicting feet movement in this case
+
+test_predict_handd = LR.predict(features_test_handd)   #predicting hand movement in this case (but any other movements can be used instead)
+test_predict_feett = LR.predict(features_test_feett)   #predicting feet movement in this case
 test_predict = np.concatenate([test_predict_handd, test_predict_feett])   #concatenating the predicted values
 y_actual = np.concatenate([np.zeros(test_predict_handd.shape[0]), np.ones(test_predict_feett.shape[0])])  #creating actual test_values
 conf_matrix = confusion_matrix(y_actual, test_predict)
