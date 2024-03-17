@@ -18,7 +18,7 @@ for i in range(raw_data.shape[1]):
     bandpower_list.append(bandpower)
 
 
-pandaArray = pandas.Series(bandpower_list[0:7], index = ['F4', 'F3', 'C4', 'C3', 'P3', 'P4', 'Oz'], name = 'Values')
+pandaArray = pandas.Series(bandpower_list[0:7], index = ['F4', 'F3', 'C4', 'C3', 'P3', 'P4', 'Oz'])
 
 fig = topoplot(pandaArray, n_colors = 200, title = "Relative Deltapower")
 plt.figure(fig)
