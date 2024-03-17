@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import confusion_matrix
 from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
 import mne
 from time import perf_counter
 
@@ -79,7 +80,7 @@ features_transform = csp.fit_transform(features, y_train)           #applying CS
 
 
 lda = LinearDiscriminantAnalysis()    #creating LDA classifier (we can specify the dimension, but if only two movements are classified, it is going to be automatically 1 dimension)
-lda_transform = lda.fit_transform(features_transform, y_train)  #applying LDA classifier to the data transformed by CSP
+lda.fit_transform = lda.fit(features_transform, y_train)  #applying LDA classifier to the data transformed by CSP (u can also just do fit but with fit_transform we can also generate plots)
 time = perf_counter() - start
 
 print(f"The time required was {time}")
