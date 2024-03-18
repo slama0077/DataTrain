@@ -83,9 +83,8 @@ lda = LinearDiscriminantAnalysis()    #creating LDA classifier (we can specify t
 lda_transform = lda.fit_transform(features_transform, y_train)  #applying LDA classifier to the data transformed by CSP (u can also just do fit but with fit_transform we can also generate plots)
 
 
-#print(lda_transform.shape, y_train.shape)
-LR = LogisticRegression(multi_class= "multinomial")
-LR.fit(lda_transform, y_train)
+LR = LogisticRegression(multi_class= "multinomial")  #applying Logistic Regression to LDA transformed data (can use ovr too)
+LR.fit(lda_transform, y_train)  #fitting LR
 
 time = perf_counter() - start
 
