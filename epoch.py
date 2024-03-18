@@ -58,7 +58,7 @@ def bandPassFilterReshape(raw_data, info):
     features = mne.io.RawArray(raw_data, info)
     features.filter(7.0, 40.0)
     features_data = features.get_data()
-    features_data = createEpoch(features_data, 750, 64)
+    features_data = createEpoch(features_data, 750, 150)
     return features_data
 
 
