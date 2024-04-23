@@ -51,6 +51,6 @@ def bandpower_multitaper(data, sf, band):
     idx_band = np.logical_and(freqs >= band[0] , freqs <= band[1])
     #plt.fill_between(freqs, psd, where=idx_band, color='skyblue')
     deltaPower = simps(psd[idx_band], freqs[idx_band], dx = freqs[1] - freqs[0])
-    # totalPower = simps(psd, dx = freqs[1] - freqs[0])
-    # relDeltaPower = (deltaPower/totalPower)
-    return deltaPower
+    totalPower = simps(psd, dx = freqs[1] - freqs[0])
+    relDeltaPower = (deltaPower/totalPower)
+    return relDeltaPower

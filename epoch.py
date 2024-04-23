@@ -58,7 +58,7 @@ def bandPassFilterReshape(raw_data, info):
     features = mne.io.RawArray(raw_data, info)
     features.filter(7.0, 40.0)
     features_data = features.get_data()
-    features_data = createEpoch(features_data, 750, 150)
+    features_data = createEpoch(features_data, 150, 64)
     return features_data
 
 
@@ -75,8 +75,8 @@ features = np.concatenate([features_hand, features_feet])   #concatenating eeg d
 
 y_train = np.concatenate([np.zeros(features_hand.shape[0]), np.ones(features_feet.shape[0])])   #creating a target object (0 rrepresenting the first movement and 1 representing the second movement)
 
-csp = mne.decoding.CSP(n_components = 21, reg = None, log = True, norm_trace = False)   #creating a csp object with no. of features = 4 (can be changed)
-features_transform = csp.fit_transform(features, y_train)           #applying CSP to the features
+csp = mne.decoding.CSP(n_components = 16, reg = None, log = True, norm_trace = False)   #creating a csp object with no. of features = 4 (can be changed)
+features_transform = csp.fit_transform(features, y_train)          #applying CSP to the features
 
 
 lda = LinearDiscriminantAnalysis()    #creating LDA classifier (we can specify the dimension, but if only two movements are classified, it is going to be automatically 1 dimension)
