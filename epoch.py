@@ -79,7 +79,7 @@ def filterProjection(lda_projections, y_train):
     delete_index = []
 
     for i in range(rows):
-        if lda_projections[i][0] > -1.0 and lda_projections[i][0] < 1.0:
+        if lda_projections[i][0] > -1.3 and lda_projections[i][0] < 1.0:
             delete_index.append(i)
             
     lda_projections = np.delete(lda_projections, delete_index, axis=0)
