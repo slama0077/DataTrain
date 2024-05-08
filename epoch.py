@@ -58,8 +58,33 @@ def bandPassFilterReshape(raw_data, info):
     features = mne.io.RawArray(raw_data, info)
     features.filter(7.0, 40.0)
     features_data = features.get_data()
-    features_data = createEpoch(features_data, 150, 64)
+    features_data = createEpoch(features_data, 250, 64)
     return features_data
+
+
+def filterProjection(lda_projections, y_train):
+
+    # print(lda_projections)
+    # print(y_train.shape)
+
+    lda_projections = np.c_[lda_projections, y_train]
+
+    rows = lda_projections.shape[0]
+
+    delete_index = []
+
+    for i in range(rows):
+        if lda_projections[i][0] > -1.0 and lda_projections[i][0] < 1.0:
+            delete_index.append(i)
+            
+    lda_projections = np.delete(lda_projections, delete_index, axis=0)
+
+    lda_transform = np.c_[lda_projections[:, 0]]
+
+    return lda_transform, lda_projections[:, 1]
+
+
+
 
 
 start = perf_counter()     #just to measure the runtime
@@ -75,13 +100,14 @@ features = np.concatenate([features_hand, features_feet])   #concatenating eeg d
 
 y_train = np.concatenate([np.zeros(features_hand.shape[0]), np.ones(features_feet.shape[0])])   #creating a target object (0 rrepresenting the first movement and 1 representing the second movement)
 
-csp = mne.decoding.CSP(n_components = 16, reg = None, log = True, norm_trace = False)   #creating a csp object with no. of features = 4 (can be changed)
+csp = mne.decoding.CSP(n_components = 21, reg = None, log = True, norm_trace = False)   #creating a csp object with no. of features = 4 (can be changed)
 features_transform = csp.fit_transform(features, y_train)          #applying CSP to the features
 
 
 lda = LinearDiscriminantAnalysis()    #creating LDA classifier (we can specify the dimension, but if only two movements are classified, it is going to be automatically 1 dimension)
 lda_transform = lda.fit_transform(features_transform, y_train)  #applying LDA classifier to the data transformed by CSP (u can also just do fit but with fit_transform we can also generate plots)
 
+lda_transform, y_train = filterProjection(lda_transform, y_train)
 
 LR = LogisticRegression(multi_class= "multinomial")  #applying Logistic Regression to LDA transformed data (can use ovr too)
 LR.fit(lda_transform, y_train)  #fitting LR
@@ -92,15 +118,19 @@ print(f"The time required was {time}")
 
 test_data_hand = ld.loadData()   #loading test data for the first movement
 features_test_hand = lda.transform(csp.transform(bandPassFilterReshape(test_data_hand, info))) #transforming data
+y_hand = np.zeros(features_test_hand.shape[0])
+features_test_hand, y_hand = filterProjection(features_test_hand, y_hand)
 test_data_feet = ld.loadData()
 features_test_feet = lda.transform(csp.transform(bandPassFilterReshape(test_data_feet, info)))  #transforming data
+y_feet = np.ones(features_test_feet.shape[0])
+features_test_feet, y_feet = filterProjection(features_test_feet, y_feet)
 
 
 
 test_predict_handd = LR.predict(features_test_hand)   #predicting hand movement in this case (but any other movements can be used instead)
 test_predict_feett = LR.predict(features_test_feet)   #predicting feet movement in this case
 test_predict = np.concatenate([test_predict_handd, test_predict_feett])   #concatenating the predicted values
-y_actual = np.concatenate([np.zeros(test_predict_handd.shape[0]), np.ones(test_predict_feett.shape[0])])  #creating actual test_values
+y_actual = np.concatenate([y_hand, y_feet])  #creating actual test_values
 conf_matrix = confusion_matrix(y_actual, test_predict)
 print("\n\n")
 print("Confusion Matrix:")
@@ -117,7 +147,7 @@ plt.show()
 
 
  
-pca = PCA(n_components=2)   #plotting pca for 2d visualization
-pca_transform = pca.fit_transform(features_transform)
-plt.scatter(pca_transform[:,0], pca_transform[:, 1], c = y_train, cmap = 'rainbow_r')
-plt.show()
+# pca = PCA(n_components=2)   #plotting pca for 2d visualization
+# pca_transform = pca.fit_transform(features_transform)
+# plt.scatter(pca_transform[:,0], pca_transform[:, 1], c = y_train, cmap = 'rainbow_r')
+# plt.show()

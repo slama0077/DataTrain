@@ -1,7 +1,9 @@
 import LoadData as ld
 import numpy as np
 
-raw_data_hand = ld.loadData()  
-raw_data_hand = np.transpose(raw_data_hand)
+x = np.array([[1], [2], [3]])
 
-print((raw_data_hand[:, 0:150]).shape)
+y = np.array([4, 5, 6])
+
+x = np.c_[x, y]
+print(x.shape)
