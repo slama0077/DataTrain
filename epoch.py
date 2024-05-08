@@ -64,8 +64,13 @@ def bandPassFilterReshape(raw_data, info):
 
 def filterProjection(lda_projections, y_train):
 
-    # print(lda_projections)
-    # print(y_train.shape)
+    '''This function takes lda projections and corresponding
+    y_values and filters out the projections that is greater than
+    -0.5 and lower than 0.5
+    
+    returns => lda_projections (//this is a column vector)
+            => y_values (//this is a row vector)
+    '''
 
     lda_projections = np.c_[lda_projections, y_train]
 
@@ -79,7 +84,7 @@ def filterProjection(lda_projections, y_train):
             
     lda_projections = np.delete(lda_projections, delete_index, axis=0)
 
-    lda_transform = np.c_[lda_projections[:, 0]]
+    lda_transform = np.c_[lda_projections[:, 0]] #converts the lda_transform from 1 dimension to 2 dimensiom
 
     return lda_transform, lda_projections[:, 1]
 
