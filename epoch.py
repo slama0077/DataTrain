@@ -11,6 +11,8 @@ from time import perf_counter
 
 def createEpoch(feature_data, epoch_size, epoch_window):
     '''
+    this creates epoch for CSP data which will be lateer
+    used for LDA
     '''
     epochs = []
     n_samples = feature_data.shape[1]
