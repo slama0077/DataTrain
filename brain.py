@@ -42,46 +42,48 @@ stepSize = 250
 features_hand = extractFeatures(rawData, sf, windowSize, stepSize)
 features_hand = features_hand[0:51000]
 features_feet = extractFeatures(rawData2, sf, windowSize, stepSize)
+print(features_hand.shape)
 
-n_samples_hand, n_channels_hand = features_hand.shape
-n_time_points = 3
-n_trial_hand = int(n_samples_hand/n_time_points)
-features_hand = features_hand.reshape(n_trial_hand, n_time_points, n_channels_hand)
-
-
-n_samples_feet, n_channels_feet = features_feet.shape
-n_trial_feet= int(n_samples_feet/n_time_points)
-features_feet = features_feet.reshape(n_trial_feet, n_time_points, n_channels_feet)
-y_train = np.concatenate([np.zeros(features_hand.shape[0]), np.ones(features_feet.shape[0])])
-features = np.concatenate([features_hand, features_feet])
+# n_samples_hand, n_channels_hand = features_hand.shape
+# n_time_points = 3
+# n_trial_hand = int(n_samples_hand/n_time_points)
+# features_hand = features_hand.reshape(n_trial_hand, n_time_points, n_channels_hand)
 
 
-csp = mne.decoding.CSP(n_components = 21, reg = None, log = True, norm_trace = False)
-x_train_csp = csp.fit_transform(features, y_train)
+
+# n_samples_feet, n_channels_feet = features_feet.shape
+# n_trial_feet= int(n_samples_feet/n_time_points)
+# features_feet = features_feet.reshape(n_trial_feet, n_time_points, n_channels_feet)
+# y_train = np.concatenate([np.zeros(features_hand.shape[0]), np.ones(features_feet.shape[0])])
+# features = np.concatenate([features_hand, features_feet])
 
 
-lda = LinearDiscriminantAnalysis()
-lda_transform = lda.fit_transform(x_train_csp, y_train)
+# csp = mne.decoding.CSP(n_components = 21, reg = None, log = True, norm_trace = False)
+# x_train_csp = csp.fit_transform(features, y_train)
 
 
-feet_test_data = ld.loadData()
-feet_test_data = extractFeatures(feet_test_data, 250)
-n_samples_test, n_channels_test = feet_test_data.shape
-n_trial_test= int(n_samples_test/n_time_points)
-feet_test_data = feet_test_data.reshape(n_trial_test, n_time_points, n_channels_test)
+# lda = LinearDiscriminantAnalysis()
+# lda_transform = lda.fit_transform(x_train_csp, y_train)
 
-feet_test_transform = csp.transform(feet_test_data)
-test_predict = lda.predict(feet_test_transform)
 
-print(test_predict)
-y_actual = np.ones(test_predict.shape[0])
-conf_matrix = confusion_matrix(y_actual, test_predict)
-accuracy = ((conf_matrix[0][0] + conf_matrix[1][1])/(sum(conf_matrix[0]) + sum(conf_matrix[1]))) * 100
+# feet_test_data = ld.loadData()
+# feet_test_data = extractFeatures(feet_test_data, 250)
+# n_samples_test, n_channels_test = feet_test_data.shape
+# n_trial_test= int(n_samples_test/n_time_points)
+# feet_test_data = feet_test_data.reshape(n_trial_test, n_time_points, n_channels_test)
 
-print("Accuracy: ")
-print(accuracy)
-plt.scatter(lda_transform, [0]*len(lda_transform), c = y_train, cmap='rainbow_r')
-plt.show()
+# feet_test_transform = csp.transform(feet_test_data)
+# test_predict = lda.predict(feet_test_transform)
+
+# print(test_predict)
+# y_actual = np.ones(test_predict.shape[0])
+# conf_matrix = confusion_matrix(y_actual, test_predict)
+# accuracy = ((conf_matrix[0][0] + conf_matrix[1][1])/(sum(conf_matrix[0]) + sum(conf_matrix[1]))) * 100
+
+# print("Accuracy: ")
+# print(accuracy)
+# plt.scatter(lda_transform, [0]*len(lda_transform), c = y_train, cmap='rainbow_r')
+# plt.show()
 
 # print("Delta\t\tAlpha\t\tBeta")
 # print(features)

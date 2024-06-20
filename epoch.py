@@ -116,6 +116,8 @@ lda_transform = lda.fit_transform(features_transform, y_train)  #applying LDA cl
 
 lda_transform, y_train = filterProjection(lda_transform, y_train)
 
+print(lda_transform)
+
 LR = LogisticRegression(multi_class= "multinomial")  #applying Logistic Regression to LDA transformed data (can use ovr too)
 LR.fit(lda_transform, y_train)  #fitting LR
 
