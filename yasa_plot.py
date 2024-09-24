@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 
 
 def calculateBandPowerEachChannel(raw_data):
+    '''Calculate Beta Bandpower of each channel and returns the list of the beta bandpower'''
+
     bandpower_list = []
     for i in range(raw_data.shape[1]):
         channel_list= []
@@ -23,9 +25,9 @@ def calculateBandPowerEachChannel(raw_data):
 raw_data = ld.loadData()
 sf = 250
 bandpower_list = calculateBandPowerEachChannel(raw_data)
-ch_names = []
+ch_names = ["FP1", "FP2", "F7", "F8", "F3", "F4", "FZ", "T3", "T4", "C3", "C4", "CZ", "P3", "P4", "PZ", "T5", "T6", "O1", "O2", "A1", "A2"]
 
-pandaArray = pandas.Series(bandpower_list[0:21], index = ["FP1", "FP2", "F7", "F8", "F3", "F4", "FZ", "T3", "T4", "C3", "C4", "CZ", "P3", "P4", "PZ", "T5", "T6", "O1", "O2", "A1", "A2"])
+pandaArray = pandas.Series(bandpower_list[0:21], index = ch_names)
 
 fig = topoplot(pandaArray, n_colors = 200, title = "Beta Bandpower Imagining Left hand movement")
 plt.figure(fig)
