@@ -6,28 +6,28 @@ from scipy.integrate import simps
 from mne.time_frequency import psd_array_multitaper as multitaper
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
-# class bandPower():
-#     def __init__(self, data, sf, band, window_sec = 0):
-#         self.data = data
-#         self.sf = sf
-#         self.band = band
-#         self.window_sec = window_sec
+class bandPower():
+    def __init__(self, data, sf, band, window_sec = 0):
+        self.data = data
+        self.sf = sf
+        self.band = band
+        self.window_sec = window_sec
     
-#     def welch(self):
-#         freqs, psd = signal.welch(self.data, self.sf, nperseg = self.window_sec * self.sf)
-#         idx_band = np.logical_and(freqs >= self.band[0], freqs <= self.band[1])
-#         fig, ax1 = plt.subplots(1,1)
-#         ax1.plot(freqs, psd)
-#         deltapower = simps(psd[idx_band], freqs[idx_band], dx = freqs[1] - freqs[0]) 
-#         return deltapower
+    def welch(self):
+        freqs, psd = signal.welch(self.data, self.sf, nperseg = self.window_sec * self.sf)
+        idx_band = np.logical_and(freqs >= self.band[0], freqs <= self.band[1])
+        fig, ax1 = plt.subplots(1,1)
+        ax1.plot(freqs, psd)
+        deltapower = simps(psd[idx_band], freqs[idx_band], dx = freqs[1] - freqs[0]) 
+        return deltapower
     
-#     def multitaper(self):
-#         psd, freqs  = multitaper(self.data, self.sf, adaptive = True, normalization = 'full', verbose = 0)
-#         fig, ax1 = plt.subplots(1,1)
-#         idx_band = np.logical_and(freqs >= self.band[0], freqs <= self.band[1])
-#         ax1.plot(freqs, psd)
-#         deltapower = simps(psd[idx_band], freqs[idx_band], dx = freqs[1] - freqs[0]) 
-#         return deltapower
+    def multitaper(self):
+        psd, freqs  = multitaper(self.data, self.sf, adaptive = True, normalization = 'full', verbose = 0)
+        fig, ax1 = plt.subplots(1,1)
+        idx_band = np.logical_and(freqs >= self.band[0], freqs <= self.band[1])
+        ax1.plot(freqs, psd)
+        deltapower = simps(psd[idx_band], freqs[idx_band], dx = freqs[1] - freqs[0]) 
+        return deltapower
 
 
 
