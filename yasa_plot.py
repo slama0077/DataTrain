@@ -1,6 +1,6 @@
 import numpy as np
-import LoadData as ld
-import Welchh
+from utils import LoadData as ld
+from utils import Welchh
 from yasa import topoplot
 import pandas
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ for i in range(raw_data.shape[1]):
     bandpower_list.append(bandpower)
 
 
-pandaArray = pandas.Series(bandpower_list[0:7], index = ['F4', 'F3', 'C4', 'C3', 'P3', 'P4', 'Oz'])
+pandaArray = pandas.Series(bandpower_list[0:21], index = ["FP1", "FP2", "F7", "F8", "F3", "F4", "FZ", "T3", "T4", "C3", "C4", "CZ", "P3", "P4", "PZ", "T5", "T6", "O1", "O2", "A1", "A2"])
 
 fig = topoplot(pandaArray, n_colors = 200, title = "Relative Deltapower")
 plt.figure(fig)
