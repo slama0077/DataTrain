@@ -8,3 +8,4 @@ The utils folder contains FFT.py file which contains functions that help us to c
 The yasa_plot.py file helps us to plot a topographical plot of our brain. I've used the beta bandpower associated with each channel to plot. You can change from beta to any bandpower as you desire by making a few simple changes to the code.
 
 
+
