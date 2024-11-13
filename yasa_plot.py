@@ -1,6 +1,6 @@
 import numpy as np
 from utils import LoadData as ld
-from utils import Welchh
+from utils import FFT
 from yasa import topoplot
 import pandas
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ def calculateBandPowerEachChannel(raw_data):
         for j in range(raw_data.shape[0]):
             channel_list.append(raw_data[j][i])
         
-        bandpower = Welchh.bandpower_multitaper(np.array(channel_list), sf, [4,30])
+        bandpower = FFT.bandpower_multitaper(np.array(channel_list), sf, [4,30])
         bandpower_list.append(bandpower)
     return bandpower_list
 
@@ -32,3 +32,4 @@ pandaArray = pandas.Series(bandpower_list[0:21], index = ch_names)
 fig = topoplot(pandaArray, n_colors = 200, title = "Beta Bandpower Imagining Left hand movement")
 plt.figure(fig)
 plt.show()
+plt

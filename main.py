@@ -1,5 +1,5 @@
 import numpy as np
-import LoadData as ld
+from utils import LoadData as ld
 import matplotlib.pyplot as plt
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import confusion_matrix
